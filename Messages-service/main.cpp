@@ -10,7 +10,7 @@ public:
 };
 
 int main(int argc, char** argv) {
-
+    hs::webserver ws = hs::create_webserver(8082)
             .start_method(hs::http::http_utils::THREAD_PER_CONNECTION);
 
     messages_service_responce msr;
@@ -21,15 +21,3 @@ int main(int argc, char** argv) {
 
     return 0;
 }
-
-
-
-
-class my_class{
-private:
-    hs::webserver ws;
-public:
-    my_class(){
-        ws{};
-    }
-};
