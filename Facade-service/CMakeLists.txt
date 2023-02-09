@@ -15,3 +15,9 @@ target_link_libraries(${PROJECT_NAME} ${LIBHTTPSERVER_LIBRARIES})
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${LIBCPR_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${LIBCPR_LIBRARIES})
+
+
+find_package(spdlog REQUIRED)
+
+target_include_directories(${PROJECT_NAME} PRIVATE spdlog)
+target_link_libraries(${PROJECT_NAME} spdlog::spdlog)

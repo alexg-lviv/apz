@@ -11,6 +11,11 @@ include(cmake/FindLibHttpServer.cmake)
 find_package(TBB REQUIRED)
 target_link_libraries(${PROJECT_NAME} TBB::tbb)
 
+find_package(spdlog REQUIRED)
+
+target_include_directories(${PROJECT_NAME} PRIVATE spdlog)
+target_link_libraries(${PROJECT_NAME} spdlog::spdlog)
+
 target_include_directories(${PROJECT_NAME} PRIVATE ${LIBHTTPSERVER_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${LIBHTTPSERVER_LIBRARIES})
 
