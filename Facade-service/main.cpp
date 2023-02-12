@@ -8,7 +8,12 @@ namespace hs = httpserver;
 
 class facade_service_resource : public hs::http_resource {
 public:
-    const std::shared_ptr<hs::http_response> render_GET(const hs::http_request &req) override {
+#ifdef IN_DOCKER
+    std::shared_ptr<httpserver::http_response> render_GET(const hs::http_request &req) override {
+#else
+    const std::shared_ptr<httpserver::http_response> render_GET(const hs::http_request &req) override {
+#endif
+
         spdlog::info("------------------------------------------------");
         spdlog::info("received GET request from the client");
 
@@ -25,11 +30,14 @@ public:
         return std::shared_ptr<hs::http_response>(new hs::string_response("responce from Logging-sercie: " + r_logging.text +
                                                                         "\nresponce from Messages-service: " + r_messages.text));
     }
-
-    const std::shared_ptr<hs::http_response> render_POST(const hs::http_request &req) override {
+#ifdef IN_DOCKER
+     std::shared_ptr<httpserver::http_response> render_POST(const hs::http_request &req) override {
+#else
+     const std::shared_ptr<httpserver::http_response> render_POST(const hs::http_request &req) override {
+#endif
         spdlog::info("------------------------------------------------");
         spdlog::info("received GET request from the client");
-        spdlog::info("client message: " + req.get_content());
+        spdlog::info("client message: " + std::string(req.get_content()));
         spdlog::info("generating UUID");
 
         uuid_t uuid;
@@ -41,7 +49,7 @@ public:
         spdlog::info("sending POST request to http://localhost:8081/logging_service");
 
         cpr::Response r_logging = cpr::Post(cpr::Url("http://localhost:8081/logging_service"),
-                                            cpr::Payload{{uuid_str, req.get_content()}});
+                                            cpr::Payload{{uuid_str, std::string(req.get_content())}});
 
         spdlog::info("received responce with status code: " + std::to_string(r_logging.status_code));
 

@@ -1,4 +1,6 @@
-cmake_minimum_required(VERSION 3.23)
+cmake_minimum_required(VERSION 3.10)
+
+set(CMAKE_CXX_STANDARD 20)
 set(PROJECT_NAME apz_lab_1)
 project(${PROJECT_NAME})
 
