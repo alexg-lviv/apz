@@ -1,0 +1,33 @@
+version: "3"
+
+networks:
+  test:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.19.0.0/24
+          gateway: 172.19.0.1
+
+services:
+  facade-servie:
+    image: facade_service:latest
+    ports:
+      - "8080:8080"
+    networks:
+      test:
+        ipv4_address: 172.19.0.2
+  logging-service:
+    image: logging-service:latest
+    ports:
+      - "8081:8081"
+    networks:
+      test:
+        ipv4_address: 172.19.0.3
+  messages-service:
+    image: messages-service:latest
+    ports:
+      - "8082:8082"
+    networks:
+      test:
+        ipv4_address: 172.19.0.4

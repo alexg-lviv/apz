@@ -6,6 +6,10 @@
 
 namespace hs = httpserver;
 
+std::string ip_facade = "172.19.0.2";
+std::string ip_logging = "172.19.0.3";
+std::string ip_messages = "172.19.0.4";
+
 class facade_service_resource : public hs::http_resource {
 public:
 #ifdef IN_DOCKER
@@ -16,13 +20,12 @@ public:
 
         spdlog::info("------------------------------------------------");
         spdlog::info("received GET request from the client");
-
-        spdlog::info("sending GET request to http://localhost:8081/logging_service");
-        cpr::Response r_logging = cpr::Get(cpr::Url("http://localhost:8081/logging_service"));
+        spdlog::info("sending GET request to http://" + ip_logging + ":8081/logging_service");
+        cpr::Response r_logging = cpr::Get(cpr::Url("http://" + ip_logging + ":8081/logging_service"));
         spdlog::info("received responce with status code: " + std::to_string(r_logging.status_code));
 
-        spdlog::info("sending GET request to http://localhost:8082/messages_service");
-        cpr::Response r_messages = cpr::Get(cpr::Url("http://localhost:8082/messages_service"));
+        spdlog::info("sending GET request to http://" + ip_messages + ":8082/messages_service");
+        cpr::Response r_messages = cpr::Get(cpr::Url("http://"  + ip_messages + ":8082/messages_service"));
         spdlog::info("received responce with status code: " + std::to_string(r_messages.status_code));
 
         spdlog::info("sending responce to client");
@@ -46,9 +49,9 @@ public:
         uuid_unparse_upper(uuid, uuid_str);
 
         spdlog::info("UUID generated: " + std::string(uuid_str));
-        spdlog::info("sending POST request to http://localhost:8081/logging_service");
+        spdlog::info("sending POST request to http://" + ip_logging + ":8081/logging_service");
 
-        cpr::Response r_logging = cpr::Post(cpr::Url("http://localhost:8081/logging_service"),
+        cpr::Response r_logging = cpr::Post(cpr::Url("http://" + ip_logging + ":8081/logging_service"),
                                             cpr::Payload{{uuid_str, std::string(req.get_content())}});
 
         spdlog::info("received responce with status code: " + std::to_string(r_logging.status_code));
