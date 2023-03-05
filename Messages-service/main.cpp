@@ -3,7 +3,7 @@
 
 namespace hs = httpserver;
 
-class messages_service_responce : public hs::http_resource {
+class messages_service_response : public hs::http_resource {
 public:
 #ifdef IN_DOCKER
     std::shared_ptr<httpserver::http_response> render_GET(const hs::http_request &req) override {
@@ -11,8 +11,8 @@ public:
     const std::shared_ptr<httpserver::http_response> render_GET(const hs::http_request &req) override {
 #endif
         spdlog::info("------------------------------------------------");
-        spdlog::info("received GET request from the facade sevice");
-        spdlog::info("sending responce");
+        spdlog::info("received GET request from the facade service");
+        spdlog::info("sending response");
         return std::shared_ptr<hs::http_response>(new hs::string_response("not implemented yet"));
     }
 };
@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
             .start_method(hs::http::http_utils::THREAD_PER_CONNECTION);
 
     spdlog::info("configuring and registering resource /messages_service");
-    messages_service_responce msr;
+    messages_service_response msr;
     msr.disallow_all();
     msr.set_allowing("GET", true);
     ws.register_resource("/messages_service", &msr);

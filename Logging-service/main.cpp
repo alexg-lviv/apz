@@ -1,5 +1,4 @@
 #include <httpserver.hpp>
-#include <iostream>
 #include "spdlog/spdlog.h"
 #include <unordered_map>
 
@@ -14,13 +13,13 @@ public:
     const std::shared_ptr<httpserver::http_response> render_GET(const hs::http_request &req) override {
 #endif
         spdlog::info("------------------------------------------------");
-        spdlog::info("received GET request from the facade sevice");
+        spdlog::info("received GET request from the facade service");
         spdlog::info("creating result string");
         std::string result{};
         for(const auto& val: entries_map){
             result.append(std::string(val.second) + " ");
         }
-        spdlog::info("sending responce: " + result);
+        spdlog::info("sending response: " + result);
 
         return std::shared_ptr<hs::http_response>(new hs::string_response(result));
     }
@@ -31,12 +30,12 @@ public:
     const std::shared_ptr<httpserver::http_response> render_POST(const hs::http_request &req) override {
 #endif
         spdlog::info("------------------------------------------------");
-        spdlog::info("received POST request from the facade sevice");
+        spdlog::info("received POST request from the facade service");
 
         auto args = req.get_args();
 
         for(const auto& val: args){
-            spdlog::info("UUOD: " + std::string(val.first) + "  value: " + std::string(val.second));
+            spdlog::info("UUID: " + std::string(val.first) + "  value: " + std::string(val.second));
             entries_map[std::string(val.first)] = std::string(val.second);
         }
         spdlog::info("added value to local map");

@@ -10,8 +10,8 @@ networks:
           gateway: 172.19.0.1
 
 services:
-  facade-servie:
-    image: facade_service:latest
+  facade-service:
+    image: facade-service:latest
     ports:
       - "8080:8080"
     networks:

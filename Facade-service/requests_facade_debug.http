@@ -6,4 +6,4 @@ Accept: text/plain
 POST http://localhost:8080/facade_service
 Content-Type: application/json
 
-"hi"
+"hi!"

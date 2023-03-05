@@ -1,14 +1,17 @@
 #include <httpserver.hpp>
 #include <uuid/uuid.h>
-#include <iostream>
 #include "cpr/cpr.h"
 #include "spdlog/spdlog.h"
 
 namespace hs = httpserver;
 
-std::string ip_facade = "172.19.0.2";
+//std::string ip_facade = "172.19.0.2";
 std::string ip_logging = "172.19.0.3";
 std::string ip_messages = "172.19.0.4";
+
+//std::string ip_facade = "127.0.0.1";
+//std::string ip_logging = "127.0.0.1";
+//std::string ip_messages = "127.0.0.1";
 
 class facade_service_resource : public hs::http_resource {
 public:
@@ -22,24 +25,25 @@ public:
         spdlog::info("received GET request from the client");
         spdlog::info("sending GET request to http://" + ip_logging + ":8081/logging_service");
         cpr::Response r_logging = cpr::Get(cpr::Url("http://" + ip_logging + ":8081/logging_service"));
-        spdlog::info("received responce with status code: " + std::to_string(r_logging.status_code));
+        spdlog::info("received response with status code: " + std::to_string(r_logging.status_code));
 
         spdlog::info("sending GET request to http://" + ip_messages + ":8082/messages_service");
         cpr::Response r_messages = cpr::Get(cpr::Url("http://"  + ip_messages + ":8082/messages_service"));
-        spdlog::info("received responce with status code: " + std::to_string(r_messages.status_code));
+        spdlog::info("received response with status code: " + std::to_string(r_messages.status_code));
 
-        spdlog::info("sending responce to client");
+        spdlog::info("sending response to client");
 
-        return std::shared_ptr<hs::http_response>(new hs::string_response("responce from Logging-sercie: " + r_logging.text +
-                                                                        "\nresponce from Messages-service: " + r_messages.text));
+        return std::shared_ptr<hs::http_response>(new hs::string_response("response from Logging-service: " + r_logging.text +
+                                                                        "\nresponse from Messages-service: " + r_messages.text));
     }
 #ifdef IN_DOCKER
      std::shared_ptr<httpserver::http_response> render_POST(const hs::http_request &req) override {
 #else
      const std::shared_ptr<httpserver::http_response> render_POST(const hs::http_request &req) override {
 #endif
+        auto a = req.get_arg("text");
         spdlog::info("------------------------------------------------");
-        spdlog::info("received GET request from the client");
+        spdlog::info("received POST request from the client");
         spdlog::info("client message: " + std::string(req.get_content()));
         spdlog::info("generating UUID");
 
@@ -48,13 +52,14 @@ public:
         char uuid_str[32];
         uuid_unparse_upper(uuid, uuid_str);
 
+
         spdlog::info("UUID generated: " + std::string(uuid_str));
         spdlog::info("sending POST request to http://" + ip_logging + ":8081/logging_service");
 
         cpr::Response r_logging = cpr::Post(cpr::Url("http://" + ip_logging + ":8081/logging_service"),
                                             cpr::Payload{{uuid_str, std::string(req.get_content())}});
 
-        spdlog::info("received responce with status code: " + std::to_string(r_logging.status_code));
+        spdlog::info("received response with status code: " + std::to_string(r_logging.status_code));
 
         return std::shared_ptr<hs::http_response>(new hs::string_response(""));
     }
@@ -68,7 +73,7 @@ int main(int argc, char** argv) {
 
     facade_service_resource fsr;
 
-    spdlog::info("configuring and registering resource /facade_sevice");
+    spdlog::info("configuring and registering resource /facade_service");
     fsr.disallow_all();
     fsr.set_allowing("GET", true);
     fsr.set_allowing("POST", true);
