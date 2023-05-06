@@ -1,4 +1,4 @@
-from Message import Message
+from Domain.Message import Message
 import requests
 import random
 

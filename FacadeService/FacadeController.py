@@ -2,7 +2,7 @@ import uuid
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
 from FacadeService import FacadeService
-from Message import Message
+from Domain.Message import Message
 import uvicorn
 
 
