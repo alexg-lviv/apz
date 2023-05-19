@@ -31,7 +31,13 @@ services:
       dockerfile: Dockerfile
     networks:
       - apz
-  messages-service:
+  messages-service1:
+    build:
+      context: ./MessagesService
+      dockerfile: Dockerfile
+    networks:
+      - apz
+  messages-service2:
     build:
       context: ./MessagesService
       dockerfile: Dockerfile
