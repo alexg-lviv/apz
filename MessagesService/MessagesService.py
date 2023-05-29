@@ -3,6 +3,9 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from MessagesMemRepository import MessagesMemRepository
 import hazelcast
+import consul
+import os
+import socket
 
 
 class MessagesService:
@@ -11,11 +14,19 @@ class MessagesService:
         self.client = hazelcast.HazelcastClient(cluster_members=["hazelcast1"])
         self.mq_queue = self.client.get_queue("messages_queue")
         self.loop = asyncio.get_running_loop()
+        self.id = os.environ["SERVICE_ID"]
+        self.name = "messages"
+        self.consul_service = consul.Consul(host="consul")
+        hostname = socket.gethostname()
+        check = consul.Check.http(f"http://{hostname}:8080/health", "10s", "2s", "20s")
+        self.consul_service.agent.service.register(self.name, service_id=self.name+self.id, address=hostname, port=8080, check=check)
+
 
     @asynccontextmanager
     async def lifespan(self, app: FastAPI):
         self.create_receive_messages_task()
         yield
+
     async def messages_reader(self):
         while True:
             if self.mq_queue.is_empty().result():

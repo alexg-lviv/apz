@@ -5,9 +5,9 @@ from Message import Message
 
 class LoggingController:
     def __init__(self):
-        self.app = FastAPI()
-
         self.logging_service = LoggingService()
+
+        self.app = FastAPI()
 
         @self.app.get("/log")
         def get_messages():
@@ -18,6 +18,10 @@ class LoggingController:
         def post_message(msg: Message):
             print("message uuid: ", msg.msg_uuid, "\nmessage:   ", msg.msg)
             self.logging_service.log_new_message(msg)
+
+        @self.app.get("/health")
+        def healthcheck():
+            return True
 
 
 controller = LoggingController()

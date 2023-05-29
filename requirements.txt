@@ -13,3 +13,4 @@ typing_extensions==4.5.0
 urllib3==1.26.15
 uvicorn==0.21.1
 hazelcast-python-client==5.1
+python-consul

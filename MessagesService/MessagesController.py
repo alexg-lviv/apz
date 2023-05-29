@@ -15,6 +15,10 @@ class MessagesController:
             print("got request")
             return str(self.service.get_messages())
 
+        @self.app.get("/health")
+        def healthcheck():
+            return True
+
 
 controller = MessagesController()
 # controller.read_msg()

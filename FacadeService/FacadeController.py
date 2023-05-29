@@ -21,6 +21,10 @@ class FacadeController:
             msg.msg_uuid = uuid.uuid1()
             return self.facade_service.log_message(msg)
 
+        @self.app.get("/health")
+        def healthcheck():
+            return True
+
 
 controller = FacadeController()
 

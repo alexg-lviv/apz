@@ -5,7 +5,7 @@ networks:
     driver: bridge
 
 services:
-  facade-service:
+  facade1:
     build:
       context: ./FacadeService
       dockerfile: Dockerfile
@@ -13,36 +13,48 @@ services:
       - "8080:8080"
     networks:
       - apz
+    environment:
+      - SERVICE_ID=1
   logging-service1:
     build:
       context: ./LoggingService
       dockerfile: Dockerfile
     networks:
       - apz
+    environment:
+      - SERVICE_ID=1
   logging-service2:
     build:
       context: ./LoggingService
       dockerfile: Dockerfile
     networks:
       - apz
+    environment:
+      - SERVICE_ID=2
   logging-service3:
     build:
       context: ./LoggingService
       dockerfile: Dockerfile
     networks:
       - apz
+    environment:
+      - SERVICE_ID=3
   messages-service1:
     build:
       context: ./MessagesService
       dockerfile: Dockerfile
     networks:
       - apz
+    environment:
+      - SERVICE_ID=1
   messages-service2:
     build:
       context: ./MessagesService
       dockerfile: Dockerfile
     networks:
       - apz
+    environment:
+      - SERVICE_ID=2
   hazelcast1:
     image: hazelcast/hazelcast
     networks:
@@ -61,3 +73,17 @@ services:
       - apz
     ports:
       - "8081:8080"
+
+  consul:
+    build:
+      context: ./Consul
+      dockerfile: Dockerfile
+    networks:
+      - apz
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+      - "8600:8600/tcp"
+    volumes:
+      - ./Consul/server1.json:/consul/config/server1.json:ro
+    command: "agent -bootstrap-expect=1"
