@@ -4,8 +4,11 @@ import hazelcast
 
 class LoggingHazelRepository:
     def __init__(self):
-        client = hazelcast.HazelcastClient(cluster_members=["hazelcast1"])
-        self.distributed_map = client.get_map("messages-map")
+        self.distributed_map = None
+        self.client = hazelcast.HazelcastClient(cluster_members=["hazelcast1"])
+
+    def add_map_name(self, map_name: str):
+        self.distributed_map = self.client.get_map(map_name)
 
     def add_msg(self, msg: Message):
         self.distributed_map.lock(msg.msg_uuid)

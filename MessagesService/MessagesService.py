@@ -12,7 +12,6 @@ class MessagesService:
     def __init__(self):
         self.repository = MessagesMemRepository()
         self.client = hazelcast.HazelcastClient(cluster_members=["hazelcast1"])
-        self.mq_queue = self.client.get_queue("messages_queue")
         self.loop = asyncio.get_running_loop()
         self.id = os.environ["SERVICE_ID"]
         self.name = "messages"
@@ -20,6 +19,7 @@ class MessagesService:
         hostname = socket.gethostname()
         check = consul.Check.http(f"http://{hostname}:8080/health", "10s", "2s", "20s")
         self.consul_service.agent.service.register(self.name, service_id=self.name+self.id, address=hostname, port=8080, check=check)
+        self.mq_queue = self.client.get_queue(self.consul_service.kv.get('queue-name')[1]["Value"].decode('utf-8'))
 
 
     @asynccontextmanager
